@@ -22,10 +22,26 @@ class MainApp extends StatefulWidget {
 class _MainAppState extends State<MainApp> {
   List mhsdata = [];
   Future<void> baca_data() async {
-    String uri = "http://192.168.1.2/akademik/dbkoneksi.php";
+    String uri = "http://192.168.1.12/akademik/dbkoneksi.php";
     try {
       //perintah untuk koneksi server
       final respon = await http.get(Uri.parse(uri));
+      if (respon.statusCode == 200) {
+        final data = jsonDecode(respon.body);
+        setState(() {
+          mhsdata = data;
+        });
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> hapus_datamhs(String xnim) async {
+    String uri = "http://192.168.1.12/akademik/hapus_mhs.php";
+    try {
+      //perintah untuk koneksi server
+      final respon = await http.post(Uri.parse(uri), body: {"xnim": xnim});
       if (respon.statusCode == 200) {
         final data = jsonDecode(respon.body);
         setState(() {
@@ -66,6 +82,12 @@ class _MainAppState extends State<MainApp> {
                   return ListTile(
                     title: Text(mhsdata[index]['nim']),
                     subtitle: Text(mhsdata[index]['nama_mhs']),
+                    trailing: IconButton(
+                      onPressed: () {
+                        hapus_datamhs(mhsdata[index]['nim']);
+                      },
+                      icon: Icon(Icons.delete),
+                    ),
                   );
                 },
               ),
