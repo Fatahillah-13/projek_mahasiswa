@@ -3,9 +3,13 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'form_entry.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: MainApp(),
+  ));
 }
 
 class MainApp extends StatefulWidget {
@@ -18,7 +22,7 @@ class MainApp extends StatefulWidget {
 class _MainAppState extends State<MainApp> {
   List mhsdata = [];
   Future<void> baca_data() async {
-    String uri = "http://192.168.1.14/akademik/dbkoneksi.php";
+    String uri = "http://192.168.1.2/akademik/dbkoneksi.php";
     try {
       //perintah untuk koneksi server
       final respon = await http.get(Uri.parse(uri));
@@ -51,14 +55,37 @@ class _MainAppState extends State<MainApp> {
             style: TextStyle(color: Colors.yellow),
           ),
         ),
-        body: ListView.builder(
-          itemCount: mhsdata.length,
-          itemBuilder: (context, index) {
-            return ListTile(
-              title: Text(mhsdata[index]['nim']),
-              subtitle: Text(mhsdata[index]['nama_mhs']),
-            );
-          },
+        body: Column(
+          children: [
+            Container(
+              height: 600,
+              width: double.infinity,
+              child: ListView.builder(
+                itemCount: mhsdata.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(mhsdata[index]['nim']),
+                    subtitle: Text(mhsdata[index]['nama_mhs']),
+                  );
+                },
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Container(
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EntryMahasiswa(),
+                      ));
+                },
+                child: Text('Tambah'),
+              ),
+            )
+          ],
         ),
       ),
     );
