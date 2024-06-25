@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'edit_formmhs.dart';
 import 'form_entry.dart';
 
 void main() {
@@ -22,7 +23,7 @@ class MainApp extends StatefulWidget {
 class _MainAppState extends State<MainApp> {
   List mhsdata = [];
   Future<void> baca_data() async {
-    String uri = "http://192.168.1.12/akademik/dbkoneksi.php";
+    String uri = "http://192.168.1.13/akademik/dbkoneksi.php";
     try {
       //perintah untuk koneksi server
       final respon = await http.get(Uri.parse(uri));
@@ -38,7 +39,7 @@ class _MainAppState extends State<MainApp> {
   }
 
   Future<void> hapus_datamhs(String xnim) async {
-    String uri = "http://192.168.1.12/akademik/hapus_mhs.php";
+    String uri = "http://192.168.1.13/akademik/hapus_mhs.php";
     try {
       //perintah untuk koneksi server
       final respon = await http.post(Uri.parse(uri), body: {"xnim": xnim});
@@ -80,8 +81,24 @@ class _MainAppState extends State<MainApp> {
                 itemCount: mhsdata.length,
                 itemBuilder: (context, index) {
                   return ListTile(
-                    title: Text(mhsdata[index]['nim']),
-                    subtitle: Text(mhsdata[index]['nama_mhs']),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => form_editmhs(
+                              mhsdata,
+                              mhsListData: {
+                                "xnim": mhsdata[index]['nim'],
+                                "xnama": mhsdata[index]['nama_mhs'],
+                                "xjurus": mhsdata[index]['jurusan'],
+                              },
+                            ),
+                          ));
+                    },
+                    title: Text(mhsdata[index]['nim'] +
+                        "\n" +
+                        mhsdata[index]['nama_mhs']),
+                    subtitle: Text(mhsdata[index]['jurusan']),
                     trailing: IconButton(
                       onPressed: () {
                         hapus_datamhs(mhsdata[index]['nim']);

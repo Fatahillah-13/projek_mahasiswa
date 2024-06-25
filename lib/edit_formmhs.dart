@@ -3,30 +3,31 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-void main(List<String> args) {
-  runApp(MaterialApp(
-    home: EntryMahasiswa(),
-  ));
-}
-
-class EntryMahasiswa extends StatefulWidget {
-  const EntryMahasiswa({super.key});
+class form_editmhs extends StatefulWidget {
+  final Map mhsListData;
+  const form_editmhs(mhsdata, {super.key, required this.mhsListData});
 
   @override
-  State<EntryMahasiswa> createState() => _EntryMahasiswaState();
+  State<form_editmhs> createState() => _form_editmhsState();
 }
 
-class _EntryMahasiswaState extends State<EntryMahasiswa> {
-  TextEditingController xnim = TextEditingController();
-  TextEditingController xnama = TextEditingController();
-  TextEditingController xjurus = TextEditingController();
+class _form_editmhsState extends State<form_editmhs> {
+  TextEditingController xnimedit = TextEditingController();
+
+  TextEditingController xnama_mhsedit = TextEditingController();
+
+  TextEditingController xjurusanedit = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+    xnimedit.text = widget.mhsListData['xnim'];
+    xnama_mhsedit.text = widget.mhsListData['xnama'];
+    xjurusanedit.text = widget.mhsListData['xjurus'];
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Input Data Siswa'),
+          title: Text('Update Data Siswa'),
           backgroundColor: Colors.blue[200],
         ),
         body: Column(
@@ -34,7 +35,7 @@ class _EntryMahasiswaState extends State<EntryMahasiswa> {
             Container(
               margin: EdgeInsets.all(10),
               child: TextField(
-                controller: xnim,
+                controller: xnimedit,
                 decoration: InputDecoration(
                     label: Text('Masukkan NIM'),
                     border: OutlineInputBorder(
@@ -44,7 +45,7 @@ class _EntryMahasiswaState extends State<EntryMahasiswa> {
             Container(
               margin: EdgeInsets.all(10),
               child: TextField(
-                controller: xnama,
+                controller: xnama_mhsedit,
                 decoration: InputDecoration(
                     label: Text('Masukkan Nama'),
                     border: OutlineInputBorder(
@@ -54,7 +55,7 @@ class _EntryMahasiswaState extends State<EntryMahasiswa> {
             Container(
               margin: EdgeInsets.all(10),
               child: TextField(
-                controller: xjurus,
+                controller: xjurusanedit,
                 decoration: InputDecoration(
                     label: Text('Masukkan Jurusan'),
                     border: OutlineInputBorder(
@@ -65,9 +66,9 @@ class _EntryMahasiswaState extends State<EntryMahasiswa> {
               margin: EdgeInsets.all(10),
               child: ElevatedButton(
                   onPressed: () {
-                    simpanData();
+                    updateData();
                   },
-                  child: Text('Simpan')),
+                  child: Text('Update')),
             )
           ],
         ),
@@ -75,16 +76,16 @@ class _EntryMahasiswaState extends State<EntryMahasiswa> {
     );
   }
 
-  Future<void> simpanData() async {
-    String uri = "http://192.168.1.13/akademik/simpan_mhs.php";
+  Future<void> updateData() async {
+    String uri = "http://192.168.1.13/akademik/update_datamhs.php";
     try {
       final respon = await http.post(Uri.parse(uri), body: {
-        'xnim': xnim.text,
-        'xnama': xnama.text,
-        'xjurus': xjurus.text
+        'xnim': xnimedit.text,
+        'xnama': xnama_mhsedit.text,
+        'xjurus': xjurusanedit.text
       });
       if (respon.statusCode == 200) {
-        print('Simpan Berhasil');
+        print('Update Berhasil');
       }
     } catch (e) {
       print(e);
